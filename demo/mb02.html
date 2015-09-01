@@ -3,7 +3,7 @@
     <head>
         <meta charset="utf-8">
         <meta http-equiv="x-ua-compatible" content="ie=edge">
-        <title>Minibars Demo 1</title>
+        <title>Minibars Demo 2</title>
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -11,7 +11,7 @@
         <!-- Place favicon.ico in the root directory -->
 
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-        <script src="http://direct.openfu.com/dev/minibars/minibars.js"></script>
+        <script src="http://direct.openfu.com/dev/minibars/minibars.js" type="application/javascript;version=1.7"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/3.0.3/handlebars.min.js"></script>
     </head>
     <body>
@@ -44,7 +44,7 @@
             body : '"Lorem ipsum" dolor sit amet, <consectetur adipiscing elit>.',
             items : [],
             };
-          for(let i = 0; i < 1000; i++) {
+          for(var i = 0; i < 1000; i++) {
             data.items.push({
               title : 'Title '+i,
               body : 'Body text of '+i+' for great good.',

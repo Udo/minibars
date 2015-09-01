@@ -1,4 +1,4 @@
-'use strict'
+'use strict';
 // author: udo.schroeter@gmail.com
 
 const Minibars = {
