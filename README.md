@@ -8,35 +8,44 @@ I designed Minibars to be a drop-in replacement for Handlebars in my daily usage
 
 Minibars templates are strings. For convenience, they can be defined and embedded in `<script>` tags:
 
-```<script id="entry-template" type="text/x-minibars-template">
+```
+<script id="entry-template" type="text/x-minibars-template">
   <div>
     <h1>{{title}}</h1>
     <div>
       {{body}}
     </div>
   </div>
-</script>```
+</script>
+```
 
 If you're re-using existing Handlebars templates in this way, you can leave the type attribute as-is (which is most likely "text/x-handlebars-template").
 
 Before you can use the template, it needs to be compiled. For example, using jQuery to fetch the content of the template string, it might look like this:
 
-```const myTemplate = Minibars.compile(
-    $('#entry-template').html());```
+```
+const myTemplate = Minibars.compile(
+    $('#entry-template').html());
+    ```
   
 Due to compilation, the template `myTemplate` becomes a simple function you can call, passing an arbitrary data object as an argument. 
 
-```$('#entries').append(myTemplate({
+```
+$('#entries').append(myTemplate({
     title : 'Hello World!',
     body : '<Greetings from Minibars!>',
-    }));```
+    }));
+ ```
 
 The Minibars template function then generates HTML code from that data:
 
-```<div>
+```
+<div>
     <h1>Hello World</h1>
     <div>
       &lt;Greetings from Minibars!&gt;
     </div>
-  </div>```
+  </div>
+  ```
   
+.
