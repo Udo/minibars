@@ -96,6 +96,35 @@ In these cases, you can use the dot notation to access lower levels of the data 
   </div>
 ```
 	
-## Block Commands
+# Block Commands
 
-
+## if Block
+
+To conditionally render a block of HTML, use the `{#if fieldName}` command:
+
+```html
+  <div>
+    <h1>{{title}}</h1>
+    {{#if body}}<div>
+      {{body}}
+    </div>{{/if}}  </div>
+```
+
+You can also optionally define an `{{else}}` section that will get rendered if the condition is not true:
+	
+```html
+  <div>
+    <h1>{{title}}</h1>
+    {{#if body}}<div>
+      {{body}}
+    </div>
+    {{else}}
+    No content!    
+    {{/if}}  </div>
+```
+
+## unless Block
+
+The `{{#unless fieldName}}` block functions exactly like `{{#if}}`, but inverse: the block gets rendered if `fieldName` is undefined.
+	
+
