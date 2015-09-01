@@ -160,7 +160,7 @@ Like most blocks, the `{{#each}}` block supports binding custom variables to the
 
 After defining them, the variables can be referenced by prefixing their names with an at symbol (`@`), as shown.
 
-_Notice: this uses a slightly different syntax than Handlebars does when declaring the custom variables. Also, note that the variables have to be prefixed with an @ symbol when used._
+_Notice: this uses a slightly different syntax than Handlebars does when declaring the custom variables. Also, note that the variables have to be prefixed with an @ symbol when used. It is not necessary to use the dot prefix notation in order to access an outer custom variable._
 
 ## properties Block
 
@@ -220,6 +220,10 @@ But it is still possible to access fields from outer contexts, using the dot pre
         {{body}} from: {{..category}}
       </div>    {{/with}}  </div>
 ```
+
+### The `this` keyword
+
+Minibars interprets the word `this` as a field name referencing the current data context. Otherwise, `this` has no special meaning in Minibars and is not used inside helper functions.
 
 ### Circumventing Name Collisions
 
