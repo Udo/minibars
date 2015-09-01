@@ -6,7 +6,8 @@ I designed Minibars to be a drop-in replacement for Handlebars in my daily usage
 
 # Getting Started
 
-Minibars templates are strings. For convenience, they can be defined and embedded in <script> tags:
+Minibars templates are strings. For convenience, they can be defined and embedded in `<script>` tags:
+
 ```<script id="entry-template" type="text/x-minibars-template">
   <div>
     <h1>{{title}}</h1>
