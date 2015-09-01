@@ -1,0 +1,80 @@
+<!doctype html>
+<html class="no-js" lang="">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title>Minibars Demo 1</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="apple-touch-icon" href="apple-touch-icon.png">
+        <!-- Place favicon.ico in the root directory -->
+
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+        <script src="../minibars.js"></script>
+    </head>
+    <body>
+        <!--[if lt IE 8]>
+            <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+        <![endif]-->
+
+        <script id="templateSource" type="text/x-handlebars-template">
+          <div class="entry">
+            <h1>{{title}}</h1>
+            <div class="body">
+              {{"yea<bla>"}}
+              {{body}}
+              {{1body}}
+              UNESC {{{unescaped_html}}}
+            </div>
+            {{#properties l1.l2 | myValue myKey }}
+            <div>
+              {{@key}} MyVal {{@myValue}}
+            </div>
+            {{/properties}}
+            {{#with body | b}}
+              <div style="font-size: 60%">{{@b}}</div>
+            {{/with}}
+            {{#each items}}
+              <div>
+                Index {{@index}} Value {{this}} Parent {{trim ..title}}
+              </div>
+            {{else}}
+              nope!
+            {{/each}}
+          </div>
+          {{log this}}
+        </script>
+        
+        <div id="templateDestination"></div>
+        
+        <script>
+          'use strict';
+          
+          const myTemplate1 = Minibars.compile($('#templateSource').html());
+          
+          const markup = myTemplate1({
+            title : 'Minibars Demo 1',
+            body : '"Lorem ipsum" dolor sit amet, <consectetur adipiscing elit>. Maecenas efficitur nibh ex, non gravida massa tempus ut. Phasellus in ex volutpat, porta turpis nec, volutpat nisl. Sed semper, quam eget aliquam tincidunt, magna urna tristique leo, blandit vulputate augue arcu ac nisl. Nam venenatis sem sapien, scelerisque elementum turpis sodales id. Morbi euismod lacus at magna molestie vestibulum. Curabitur condimentum nunc sit amet consequat dapibus. Suspendisse accumsan arcu id mi molestie, eu cursus massa ultrices. Aenean leo quam, rhoncus vel malesuada quis, sollicitudin sed nisl.',
+            l1 : {
+              l2 : {
+                k1 : "k1 accessor test",
+                k2 : "k2 accessor test",
+                k3 : "k3 accessor test",
+              },
+            },
+            items : [
+              { x : 1, y : 2, z : 3 },
+              { x : 2, y : 3, z : 4 },
+              { x : 3, y : 4, z : 5 },
+            ],
+            });
+
+          $('#templateDestination').html(markup);          
+          console.log('template func', myTemplate1);
+          console.log('markup', markup);
+          
+        </script>
+        
+    </body>
+</html>
