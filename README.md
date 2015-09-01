@@ -26,7 +26,7 @@ Before you can use the template, it needs to be compiled. For example, using jQu
 ```
 const myTemplate = Minibars.compile(
     $('#entry-template').html());
-    ```
+```
   
 Due to compilation, the template `myTemplate` becomes a simple function you can call, passing an arbitrary data object as an argument. 
 
@@ -35,7 +35,7 @@ $('#entries').append(myTemplate({
     title : 'Hello World!',
     body : '<Greetings from Minibars!>',
     }));
- ```
+```
 
 The Minibars template function then generates HTML code from that data:
 
@@ -46,6 +46,6 @@ The Minibars template function then generates HTML code from that data:
       &lt;Greetings from Minibars!&gt;
     </div>
   </div>
-  ```
+```
   
 .
