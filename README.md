@@ -198,6 +198,7 @@ where the data might look like this:
 	
 ```javascript
 {
+	category : 'misc',
 	article : {
 		title : 'Hello World',
 		body : '<Greetings from Minibars!>',
@@ -205,3 +206,31 @@ where the data might look like this:
 }
 ```
  
+### Addressing Parent Contexts
+
+Inside block commands, the context of the data object changes to whatever the block is rendering. For example, within the `{{#with fieldName}}` block, the field `fieldName` becomes the local root object.
+
+But it is still possible to access fields from outer contexts, using the dot prefix notation:
+
+```html
+  <div>
+    {{#with article}}
+      <h1>{{title}}</h1>
+      <div>
+        {{body}} from: {{..category}}
+      </div>    {{/with}}  </div>
+```
+
+### Circumventing Name Collisions
+
+Handlebars uses the same notation for field names and commands, and Minibars - striving for limited drop-in compatibility - replicates this behavior. For example, if your data contains a field named "else", it will collide with the `{{else}}` command.
+	
+Minibars will always choose the name of a command over the name of a field when resolving this. To properly address a susceptible field, prefix its name with a dot character (`.`): `{{.else}}`
+
+## log Helper
+
+For debugging, it might be helpful to use the `{{log fieldName}}` command, which prints the referenced field into the browser's console.
+	
+# Customizing Minibars
+
+To extend the functionality of Minibars, you can
