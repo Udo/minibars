@@ -48,4 +48,20 @@ The Minibars template function then generates HTML code from that data:
   </div>
 ```
   
-.
+# Data Fields
+
+Fundamentally, Minibars fills fields from your data object into placeholders assigned for them inside the template. The example above illustrates a simple case. By default, all content is escaped for HTML code, meaning that the data will be seen as plain text by the browser.
+
+In the example above, the field `{{body}}`, combined with the data string `'<Greetings from Minibars!>'` results in the output:
+	
+```
+  &lt;Greetings from Minibars!&gt;
+```
+
+If you need un-escaped HTML code from the data object in your result, you can instead use the three-bracket notation: `{{{body}}}`, resulting in this (rather unsafe output):
+
+```
+  <Greetings from Minibars!>
+```
+
+
