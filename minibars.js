@@ -218,7 +218,7 @@ const Minibars = {
     },
     
     _text_f : function(token) {
-      return('output += '+JSON.stringify(token.val)+';');
+      return('output += '+JSON.stringify(Minibars.opt.trim ? token.val.trim() : token.val)+';');
     },
     
     _field_f : function(token) {
@@ -261,10 +261,12 @@ const Minibars = {
     return(code.join("\n"));
   },
   
-  compile : function(text) {
+  compile : function(text, opt) {
+    if(!opt) opt = {};
+    Minibars.opt = opt;
     Minibars.stack = [];
     Minibars.scope = 'data';
-    const tokens = Minibars.tokenize(text);
+    const tokens = Minibars.tokenize(text.trim());
     const code = Minibars.tokensToCode(tokens);
     //console.log('code', code);
     if(Minibars.stack.length != 0) {

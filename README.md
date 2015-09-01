@@ -259,6 +259,16 @@ Minibars will always choose the name of a command over the name of a field when 
 ## log Helper
 
 For debugging, it might be helpful to use the `{{log fieldName}}` command, which prints the referenced field into the browser's console.
+
+# Compile Time Options
+
+## Remove Whitespace
+
+Minibars will remove the whitespace from rendered components if a template is compiled with the `trim` option: 
+
+```javascript
+  const temp1 = Minibars.compile(myTemplateString, { trim : true });
+```
 	
 # Customizing Minibars
 

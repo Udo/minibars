@@ -11,7 +11,8 @@
         <!-- Place favicon.ico in the root directory -->
 
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-        <script src="../minibars.js"></script>
+        <script src="http://direct.openfu.com/dev/minibars/minibars.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/3.0.3/handlebars.min.js"></script>
     </head>
     <body>
         <!--[if lt IE 8]>
@@ -35,7 +36,8 @@
         <script>
           'use strict';
           
-          const myTemplate1 = Minibars.compile($('#templateSource').html());
+          const minibarsTemplate = Minibars.compile($('#templateSource').html());
+          const handlebarsTemplate = Handlebars.compile($('#templateSource').html());
           
           const data = {
             title : 'Minibars Demo 2',
@@ -49,9 +51,12 @@
               });
           }
 
-          const renderedTemplate = myTemplate1(data);  
+          const renderedTemplateMB = minibarsTemplate(data);  
+          const renderedTemplateHB = handlebarsTemplate(data);  
           
-          $('#templateDestination').text('rendering done, '+renderedTemplate.length+' bytes');
+          $('#templateDestination').append('<p>rendering done, MB '+renderedTemplateMB.length+' bytes, HB '+renderedTemplateHB.length+' bytes</p>');
+          
+          $('#templateDestination').append('<table><tr><td valign="top">Minibars:<br/>'+renderedTemplateMB+'</td><td valign="top">Handlebars:<br/>'+renderedTemplateHB+'</td></tr></table>');
           
         </script>
         
