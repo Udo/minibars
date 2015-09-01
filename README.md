@@ -8,7 +8,7 @@ I designed Minibars to be a drop-in replacement for Handlebars in my daily usage
 
 Minibars templates are strings. For convenience, they can be defined and embedded in `<script>` tags:
 
-```
+```html
 <script id="entry-template" type="text/x-minibars-template">
   <div>
     <h1>{{title}}</h1>
@@ -23,14 +23,14 @@ If you're re-using existing Handlebars templates in this way, you can leave the 
 
 Before you can use the template, it needs to be compiled. For example, using jQuery to fetch the content of the template string, it might look like this:
 
-```
+```javascript
 const myTemplate = Minibars.compile(
     $('#entry-template').html());
 ```
   
 Due to compilation, the template `myTemplate` becomes a simple function you can call, passing an arbitrary data object as an argument. 
 
-```
+```javascript
 $('#entries').append(myTemplate({
     title : 'Hello World!',
     body : '<Greetings from Minibars!>',
@@ -39,7 +39,7 @@ $('#entries').append(myTemplate({
 
 The Minibars template function then generates HTML code from that data:
 
-```
+```html
   <div>
     <h1>Hello World</h1>
     <div>
