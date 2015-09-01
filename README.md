@@ -127,4 +127,81 @@ You can also optionally define an `{{else}}` section that will get rendered if t
 
 The `{{#unless fieldName}}` block functions exactly like `{{#if}}`, but inverse: the block gets rendered if `fieldName` is undefined.
 	
-
+## each Block
+
+To render a block for each item in an array, use the `{{#each listName}}` command:
+	
+```html
+  <ul>
+    {{#each items}}<div>
+      {{@index}}: {{text}}
+    </div>{{/each}}  </ul>
+```where the data might look like this:
+
+```javascript
+{
+  items : [
+    { text : 'example 1' },
+    { text : 'example 2' },
+    { text : 'example 3' },
+  ]}
+```You can use the `{{else}}` block in conjunction with {{#each}} (see the `if` block documentation for usage information).
+
+### Binding Custom Variables
+
+Like most blocks, the `{{#each}}` block supports binding custom variables to the referenced container object. This is done by appending a pipe symbol (`|`) and the custom field name to the command. In the example above, we might do this:
+
+```html
+  <ul>
+    {{#each items | myItem myIndex }}<div>
+      {{@myIndex}}: {{@myItem}}
+    </div>{{/each}}  </ul>
+```
+
+After defining them, the variables can be referenced by prefixing their names with an at symbol (`@`), as shown.
+
+_Notice: this uses a slightly different syntax than Handlebars does when declaring the custom variables. Also, note that the variables have to be prefixed with an @ symbol when used._
+
+## properties Block
+
+To render a block for each item in an object (not an array), use the `{{#properties objectName}}` command:
+	
+```html
+  <ul>
+    {{#properties meta}}<div>
+      {{@key}}: {{this}}
+    </div>{{/properties}}  </ul>
+```where the data might look like this:
+
+```javascript
+{
+	meta : {
+		published : '2015-08-31',
+		author : 'udo',
+		email : 'udo.schroeter@gmail.com'	}}
+```You can use the `{{else}}` block in conjunction with {{#properties}} (see the `if` block documentation for usage information)._Notice: this is different from Handlebars.js which doesn't distinguish between arrays and objects - but Minibars does!_
+
+## with Block
+
+Using the `{{#with fieldName}}` command, you can change the reference of the current scope object.
+
+```html
+  <div>
+    {{#with article}}
+      <h1>{{title}}</h1>
+      <div>
+        {{body}}
+      </div>    {{/with}}  </div>
+```
+
+where the data might look like this:
+	
+```javascript
+{
+	article : {
+		title : 'Hello World',
+		body : '<Greetings from Minibars!>',
+	}
+}
+```
+ 
