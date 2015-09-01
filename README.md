@@ -40,7 +40,7 @@ $('#entries').append(myTemplate({
 The Minibars template function then generates HTML code from that data:
 
 ```
-<div>
+  <div>
     <h1>Hello World</h1>
     <div>
       &lt;Greetings from Minibars!&gt;
