@@ -4,6 +4,8 @@
 
 I designed Minibars to be a minimally viable drop-in replacement for Handlebars in _my_ daily usage - your mileage will probably vary. Minibars does not offer any of the following advanced features: template comments (you can still use HTML comments), the Handblebars API, the same helper function signature, partials, and there are some differences in variable scoping behavior. However, simple Handlebars templates should compile without changes under Minibars.
 
+License: minibars.js is released into the public domain.
+
 # Getting Started
 
 Minibars templates are strings. For convenience, they can be defined and embedded in `<script>` tags:
