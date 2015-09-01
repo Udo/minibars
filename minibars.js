@@ -119,7 +119,7 @@ const Minibars = {
   helpers : { 
     
     /* example helper function */
-    trim : function(val) {
+    trim : function(val, container, fieldName, rootContext) {
       return(val.trim())
     },
         
