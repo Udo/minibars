@@ -2,7 +2,7 @@
 
 Minibars is a small, light-weight alternative to the more fully-featured Handlebars (http://handlebarsjs.com/) templating engine. It's non-minified code is just about 8kb in size, which makes it a viable alternative where code size is an issue and not all of Handlebars' features are required.
 
-I designed Minibars to be a drop-in replacement for Handlebars in my daily usage - your mileage will probably vary.
+I designed Minibars to be a minimally viable drop-in replacement for Handlebars in _my_ daily usage - your mileage will probably vary. Minibars does not offer any of the following advanced features: template comments (you can still use HTML comments), the Handblebars API, the same helper function signature, partials, and there are some differences in variable scoping behavior. 
 
 # Getting Started
 
@@ -79,7 +79,9 @@ Assuming you have a complex data object like this one:
 	meta : {
 		published : '2015-08-31',
 		author : 'udo',
-		email : 'udo.schroeter@gmail.com'	}}
+		email : 'udo.schroeter@gmail.com'
+	}
+}
 ```
 
 In these cases, you can use the dot notation to access lower levels of the data inside your template:
@@ -90,7 +92,8 @@ In these cases, you can use the dot notation to access lower levels of the data 
     <div>
       {{body}}
     </div>
-    <div class="meta">      published: {{meta.published}}
+    <div class="meta">
+      published: {{meta.published}}
       by: <a href="mailto:{{meta.email}}">{{meta.author}}</a>     
     </div>
   </div>
@@ -107,7 +110,8 @@ To conditionally render a block of HTML, use the `{#if fieldName}` command:
     <h1>{{title}}</h1>
     {{#if body}}<div>
       {{body}}
-    </div>{{/if}}  </div>
+    </div>{{/if}}
+  </div>
 ```
 
 You can also optionally define an `{{else}}` section that will get rendered if the condition is not true:
@@ -120,7 +124,8 @@ You can also optionally define an `{{else}}` section that will get rendered if t
     </div>
     {{else}}
     No content!    
-    {{/if}}  </div>
+    {{/if}}
+  </div>
 ```
 
 ## unless Block
@@ -135,8 +140,11 @@ To render a block for each item in an array, use the `{{#each listName}}` comman
   <ul>
     {{#each items}}<div>
       {{@index}}: {{text}}
-    </div>{{/each}}  </ul>
-```where the data might look like this:
+    </div>{{/each}}
+  </ul>
+```
+
+where the data might look like this:
 
 ```javascript
 {
@@ -144,8 +152,11 @@ To render a block for each item in an array, use the `{{#each listName}}` comman
     { text : 'example 1' },
     { text : 'example 2' },
     { text : 'example 3' },
-  ]}
-```You can use the `{{else}}` block in conjunction with {{#each}} (see the `if` block documentation for usage information).
+  ]
+}
+```
+
+You can use the `{{else}}` block in conjunction with {{#each}} (see the `if` block documentation for usage information).
 
 ### Binding Custom Variables
 
@@ -155,7 +166,8 @@ Like most blocks, the `{{#each}}` block supports binding custom variables to the
   <ul>
     {{#each items | myItem myIndex }}<div>
       {{@myIndex}}: {{@myItem}}
-    </div>{{/each}}  </ul>
+    </div>{{/each}}
+  </ul>
 ```
 
 After defining them, the variables can be referenced by prefixing their names with an at symbol (`@`), as shown.
@@ -170,16 +182,25 @@ To render a block for each item in an object (not an array), use the `{{#propert
   <ul>
     {{#properties meta}}<div>
       {{@key}}: {{this}}
-    </div>{{/properties}}  </ul>
-```where the data might look like this:
+    </div>{{/properties}}
+  </ul>
+```
+
+where the data might look like this:
 
 ```javascript
 {
 	meta : {
 		published : '2015-08-31',
 		author : 'udo',
-		email : 'udo.schroeter@gmail.com'	}}
-```You can use the `{{else}}` block in conjunction with {{#properties}} (see the `if` block documentation for usage information)._Notice: this is different from Handlebars.js which doesn't distinguish between arrays and objects - but Minibars does!_
+		email : 'udo.schroeter@gmail.com'
+	}
+}
+```
+
+You can use the `{{else}}` block in conjunction with {{#properties}} (see the `if` block documentation for usage information).
+
+_Notice: this is different from Handlebars.js which doesn't distinguish between arrays and objects - but Minibars does!_
 
 ## with Block
 
@@ -191,7 +212,9 @@ Using the `{{#with fieldName}}` command, you can change the reference of the cur
       <h1>{{title}}</h1>
       <div>
         {{body}}
-      </div>    {{/with}}  </div>
+      </div>
+    {{/with}}
+  </div>
 ```
 
 where the data might look like this:
@@ -218,7 +241,9 @@ But it is still possible to access fields from outer contexts, using the dot pre
       <h1>{{title}}</h1>
       <div>
         {{body}} from: {{..category}}
-      </div>    {{/with}}  </div>
+      </div>
+    {{/with}}
+  </div>
 ```
 
 ### The `this` keyword
@@ -245,4 +270,8 @@ For reference, the helpers object already contains an example helper, called "tr
 Minibars.helpers.trim = function(val, container, fieldName, rootContext) {
   return(val.trim());
 }
-```While commands like `{{#each}}` are incorporated into the template function at compile time, helpers are merely referenced and actually executed at run time as the template is being rendered.However, a helper must still be defined before compilation, since Minibars will be resolving its name at that point. If it's not present, Minibars will assume it's referencing a data field instead.
+```
+
+While commands like `{{#each}}` are incorporated into the template function at compile time, helpers are merely referenced and actually executed at run time as the template is being rendered.
+
+However, a helper must still be defined before compilation, since Minibars will be resolving its name at that point. If it's not present, Minibars will assume it's referencing a data field instead.
