@@ -52,11 +52,15 @@ The Minibars template function then generates HTML code from that data:
 
 Fundamentally, Minibars fills fields from your data object into placeholders assigned for them inside the template. The example above illustrates a simple case. By default, all content is escaped for HTML code, meaning that the data will be seen as plain text by the browser.
 
+## Safe HTML Escaping
+
 In the example above, the field `{{body}}`, combined with the data string `'<Greetings from Minibars!>'` results in the output:
 	
 ```
   &lt;Greetings from Minibars!&gt;
 ```
+
+## Raw Output
 
 If you need un-escaped HTML code from the data object in your result, you can instead use the three-bracket notation: `{{{body}}}`, resulting in this (rather unsafe output):
 
@@ -64,4 +68,32 @@ If you need un-escaped HTML code from the data object in your result, you can in
   <Greetings from Minibars!>
 ```
 
+## Accessing Sub Fields
 
+Assuming you have a complex data object like this one:
+
+```javascript
+{
+	title : 'Hello World',
+	body : '<Greetings from Minibars!>',
+	meta : {
+		published : '2015-08-31',
+		author : 'udo',
+		email : 'udo.schroeter@gmail.com'	}}
+```
+
+In these cases, you can use the dot notation to access lower levels of the data inside your template:
+
+```html
+  <div>
+    <h1>{{title}}</h1>
+    <div>
+      {{body}}
+    </div>
+    <div class="meta">      published: {{meta.published}}
+      	by: <a href="mailto:{{meta.email}}">{{meta.author}}</a>     
+    </div>
+  </div>
+```
+	
+
