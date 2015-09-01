@@ -1,0 +1,59 @@
+<!doctype html>
+<html class="no-js" lang="">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title>Minibars Demo 1</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="apple-touch-icon" href="apple-touch-icon.png">
+        <!-- Place favicon.ico in the root directory -->
+
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+        <script src="../minibars.js"></script>
+    </head>
+    <body>
+        <!--[if lt IE 8]>
+            <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+        <![endif]-->
+
+        <script id="templateSource" type="text/x-handlebars-template">
+          <h1>{{title}}</h1>
+          {{#each items}}
+          <div class="entry">
+            <h2>{{title}}</h2>
+            <div class="body">
+              {{body}}
+            </div>
+          </div>
+          {{/each}}
+        </script>
+        
+        <div id="templateDestination"></div>
+        
+        <script>
+          'use strict';
+          
+          const myTemplate1 = Minibars.compile($('#templateSource').html());
+          
+          const data = {
+            title : 'Minibars Demo 2',
+            body : '"Lorem ipsum" dolor sit amet, <consectetur adipiscing elit>.',
+            items : [],
+            };
+          for(let i = 0; i < 1000; i++) {
+            data.items.push({
+              title : 'Title '+i,
+              body : 'Body text of '+i+' for great good.',
+              });
+          }
+
+          const renderedTemplate = myTemplate1(data);  
+          
+          $('#templateDestination').text('rendering done, '+renderedTemplate.length+' bytes');
+          
+        </script>
+        
+    </body>
+</html>
