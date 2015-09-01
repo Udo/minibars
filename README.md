@@ -233,4 +233,12 @@ For debugging, it might be helpful to use the `{{log fieldName}}` command, which
 	
 # Customizing Minibars
 
-To extend the functionality of Minibars, you can
+To extend the functionality of Minibars, you can introduce your own helper callbacks by appending functions to the `Minibars.helpers` object.
+
+For reference, the helpers object already contains an example helper, called "trim", which removes superfluous whitespace from content:
+
+```
+Minibars.helpers.trim = function(val, container, fieldName, rootContext) {
+  return(val.trim());
+}
+```While commands like `{{#each}}` are incorporated into the template function at compile time, helpers are merely referenced and actually executed at run time as the template is being rendered.However, a helper must still be defined before compilation, since Minibars will be resolving its name at that point. If it's not present, Minibars will assume it's referencing a data field instead.
