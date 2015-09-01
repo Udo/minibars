@@ -91,7 +91,7 @@ In these cases, you can use the dot notation to access lower levels of the data 
       {{body}}
     </div>
     <div class="meta">      published: {{meta.published}}
-      	by: <a href="mailto:{{meta.email}}">{{meta.author}}</a>     
+      by: <a href="mailto:{{meta.email}}">{{meta.author}}</a>     
     </div>
   </div>
 ```
