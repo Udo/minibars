@@ -1,6 +1,7 @@
 // author: udo.schroeter@gmail.com
+// caution: right now this only works on Chrome!
 
-Minibars = {
+var _m = {
   
   scope : 'data',
   stack : [],
@@ -63,7 +64,7 @@ Minibars = {
     
     vnCounter : 0,
     getName : function() {
-      return('v'+Minibars.utils.vnCounter++);
+      return('v'+_m.utils.vnCounter++);
     },
       
     safe : function(raw) {
@@ -77,16 +78,16 @@ Minibars = {
     
     // resolve field from label at compile time
     field : function(label) {
-      label = label.trim();
+      label = (label || '').trim();
       if(label[0] == '"' && label[label.length-1] == '"') return(JSON.stringify(label.slice(1, -1)));
-      if(label == 'this') return(Minibars.scope);
+      if(label == 'this') return(_m.scope);
       if(label[0] == '@') return(label.slice(1));
-      var scope = Minibars.scope;
+      var scope = _m.scope;
       var upCnt = 0;
       while(label[0] == '.') {
         // access parent scopes with ..
-        if(upCnt > 0 && Minibars.stack.length >= upCnt) {
-          scope = Minibars.stack[Minibars.stack.length-upCnt];                    
+        if(upCnt > 0 && _m.stack.length >= upCnt) {
+          scope = _m.stack[_m.stack.length-upCnt];                    
         }
         upCnt++;
         label = label.slice(1);
@@ -101,20 +102,20 @@ Minibars = {
     },
     
     pushScope : function() {
-      Minibars.stack.push(Minibars.scope);
-      Minibars.scope = Minibars.utils.getName();
-      return(Minibars.scope);
+      _m.stack.push(_m.scope);
+      _m.scope = _m.utils.getName();
+      return(_m.scope);
     },
     
     popScope : function() {
-      Minibars.scope = Minibars.stack.pop() || 'data';
-      return(Minibars.scope);
+      _m.scope = _m.stack.pop() || 'data';
+      return(_m.scope);
     },
     
   },
   
   // helpers are called during runtime, but they need to be defined before compile() is called 
-  // because Minibars resolves their name during compile time
+  // because _m resolves their name during compile time
   helpers : { 
     
     /* example helper function */
@@ -128,7 +129,7 @@ Minibars = {
   gen : {
     
     if_start : function(token) {
-      return('if('+Minibars.utils.field(token.params.trim())+') {');
+      return('if('+_m.utils.field(token.params.trim())+') {');
     },
     
     if_end : function(token) {
@@ -136,7 +137,7 @@ Minibars = {
     },
     
     unless_start : function(token) {
-      return('if(!'+Minibars.utils.field(token.params.trim())+') {');
+      return('if(!'+_m.utils.field(token.params.trim())+') {');
     },
     
     unless_end : function(token) {
@@ -144,9 +145,9 @@ Minibars = {
     },
     
     each_start : function(token) {
-      var container = Minibars.utils.field(token.params.trim());
-      var iterVN = Minibars.utils.getName();
-      var scp = Minibars.utils.pushScope();
+      var container = _m.utils.field(token.params.trim());
+      var iterVN = _m.utils.getName();
+      var scp = _m.utils.pushScope();
       return(
         'if('+container+'&&'+container+'.length>0) '+
         'for(var '+iterVN+'=0;'+iterVN+'<'+container+'.length;'+iterVN+'++) {'+
@@ -155,7 +156,7 @@ Minibars = {
     },
     
     each_end : function(token) {
-      Minibars.utils.popScope();
+      _m.utils.popScope();
       return('}');
     },
     
@@ -175,10 +176,10 @@ Minibars = {
     },
     
     properties_start : function(token) {
-      var container = Minibars.utils.field(token.params.trim());
-      var iterVN = Minibars.utils.getName();
-      var keyVN = Minibars.utils.getName();
-      var scp = Minibars.utils.pushScope();
+      var container = _m.utils.field(token.params.trim());
+      var iterVN = _m.utils.getName();
+      var keyVN = _m.utils.getName();
+      var scp = _m.utils.pushScope();
       return(
         'var '+keyVN+'=Object.keys('+container+');'+
         'if('+container+'&&'+keyVN+'.length>0) '+
@@ -186,25 +187,25 @@ Minibars = {
         'var index='+iterVN+';'+
         'var key='+keyVN+'['+iterVN+'];'+
         'var '+scp+'='+container+'[key];'+
-        Minibars.gen.local_mapping(token, [scp, 'key']));
+        _m.gen.local_mapping(token, [scp, 'key']));
     },
     
     properties_end : function(token) {
-      Minibars.utils.popScope();
+      _m.utils.popScope();
       return('}');
     },
     
     with_start : function(token) {
-      var container = Minibars.utils.field(token.params.trim());
-      var scp = Minibars.utils.pushScope();
+      var container = _m.utils.field(token.params.trim());
+      var scp = _m.utils.pushScope();
       return(
         'if('+container+') { '+
         'var '+scp+'='+container+';'+
-        Minibars.gen.local_mapping(token, [scp]));
+        _m.gen.local_mapping(token, [scp]));
     },
     
     with_end : function(token) {
-      Minibars.utils.popScope();
+      _m.utils.popScope();
       return('}');
     },
     
@@ -213,48 +214,54 @@ Minibars = {
     },
     
     log : function(token) {
-      return('console.log(Minibars.utils.safe('+Minibars.utils.field(token.params)+'));');
+      return('console.log(_m.utils.safe('+_m.utils.field(token.params)+'));');
     },
     
     _text_f : function(token) {
-      return('output += '+JSON.stringify(Minibars.opt.trim ? token.val.trim() : token.val)+';');
+      return('output += '+JSON.stringify(_m.opt.trim ? token.val.trim() : token.val)+';');
     },
     
-    _field_f : function(token) {
+    _invoke_synth : function(ct, token) {
+      return('output += _m.utils.'+
+        (token.raw ? 'unsafe' : 'safe')+
+        '('+ct+'['+JSON.stringify(token.val)+']('+_m.utils.field(token.params || 'this')+
+        ', '+_m.utils.field('this')+', '+JSON.stringify(token.params)+', data));');
+    },
+    
+    _field_f : function(token, opt) {
       if(token.block == 'start' || token.block == 'end') {
         var genKey = token.val+'_'+token.block;
-        if(Minibars.gen[genKey])
-          return(Minibars.gen[genKey](token));
+        if(_m.gen[genKey])
+          return(_m.gen[genKey](token));
         else {
           console.log('unrecognized field type', genKey);
           return('');
         }
       }
-      if(Minibars.gen[token.val])
-        return(Minibars.gen[token.val](token));
-      if(Minibars.helpers[token.val])
-        return('output += Minibars.utils.'+
-          (token.raw ? 'unsafe' : 'safe')+
-          '(Minibars.helpers['+JSON.stringify(token.val)+']('+Minibars.utils.field(token.params)+
-          ', '+Minibars.utils.field('this')+', '+JSON.stringify(token.params)+', data));');
+      if(_m.gen[token.val])
+        return(_m.gen[token.val](token));
+      if(_m.helpers[token.val])
+        return(_m.gen._invoke_synth('_m.helpers', token));
+      else if(typeof opt[token.val] == 'function')
+        return(_m.gen._invoke_synth('opt', token));
       else {
-        return('output += Minibars.utils.'+
+        return('output += _m.utils.'+
           (token.raw ? 'unsafe' : 'safe')+
-          '('+Minibars.utils.field(token.val)+');');
+          '('+_m.utils.field(token.val)+');');
       }
     },
     
   },
   
-  tokensToCode : function(tokens) {
+  tokensToCode : function(tokens, opt) {
     var code = [];
     
     tokens.forEach(function(t) {
-      var handler = Minibars.gen['_'+t.type+'_f'];
+      var handler = _m.gen['_'+t.type+'_f'];
       if(typeof handler != 'function')
         console.log('unrecognized field type', t.type);
       else
-        code.push(handler(t));
+        code.push(handler(t, opt));
     });
     
     return(code.join("\n"));
@@ -262,20 +269,22 @@ Minibars = {
   
   compile : function(text, opt) {
     if(!opt) opt = {};
-    Minibars.opt = opt;
-    Minibars.stack = [];
-    Minibars.scope = 'data';
-    var tokens = Minibars.tokenize(text.trim());
-    var code = Minibars.tokensToCode(tokens);
+    _m.opt = opt;
+    _m.stack = [];
+    _m.scope = 'data';
+    var tokens = _m.tokenize((text || '').trim());
+    var code = _m.tokensToCode(tokens, opt);
     //console.log('code', code);
-    if(Minibars.stack.length != 0) {
+    if(_m.stack.length != 0) {
       var e = function() { return('template error: un-closed blocks'); };
       e.error = e();
       return(e);      
     } else {
       // straight-up string concat seems to be the fastest option
-      return(eval('(function(data) { "use strict"; var output = ""; '+code+' return(output); })'));
+      return(eval('(function(data) { "use strict"; if(!data) data = {}; var output = ""; '+code+' return(output); })'));
     }
   },
   
 }
+
+var Minibars = _m;

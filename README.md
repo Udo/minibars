@@ -271,6 +271,27 @@ Minibars will remove the whitespace from rendered components if a template is co
 ```javascript
   const temp1 = Minibars.compile(myTemplateString, { trim : true });
 ```
+
+## Templates within Templates
+
+The `Minibars.compile()` function takes an optional parameter argument that allows
+you to specify other Minibars templates as helpers. For eample:
+
+```javascript
+  const entryTemplate = Minibars.compile(entryTemplateString);
+  const mainTemplate = Minibars.compile(myTemplateString, { entry : entryTemplate });
+```
+
+Then, the entry template can be called from within the main template:
+
+```html
+  <div>
+    <h1>{{title}}</h1>
+    {{#each items}}
+      {{{entry}}}
+    {{/each}}
+  </div>
+```
 	
 # Customizing Minibars
 

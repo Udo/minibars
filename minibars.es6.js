@@ -2,7 +2,7 @@
 // author: udo.schroeter@gmail.com
 // caution: right now this only works on Chrome!
 
-const Minibars = {
+const _m = {
   
   scope : 'data',
   stack : [],
@@ -65,7 +65,7 @@ const Minibars = {
     
     vnCounter : 0,
     getName : function() {
-      return('v'+Minibars.utils.vnCounter++);
+      return('v'+_m.utils.vnCounter++);
     },
       
     safe : function(raw) {
@@ -79,16 +79,16 @@ const Minibars = {
     
     // resolve field from label at compile time
     field : function(label) {
-      label = label.trim();
+      label = (label || '').trim();
       if(label[0] == '"' && label[label.length-1] == '"') return(JSON.stringify(label.slice(1, -1)));
-      if(label == 'this') return(Minibars.scope);
+      if(label == 'this') return(_m.scope);
       if(label[0] == '@') return(label.slice(1));
-      let scope = Minibars.scope;
+      let scope = _m.scope;
       let upCnt = 0;
       while(label[0] == '.') {
         // access parent scopes with ..
-        if(upCnt > 0 && Minibars.stack.length >= upCnt) {
-          scope = Minibars.stack[Minibars.stack.length-upCnt];                    
+        if(upCnt > 0 && _m.stack.length >= upCnt) {
+          scope = _m.stack[_m.stack.length-upCnt];                    
         }
         upCnt++;
         label = label.slice(1);
@@ -103,20 +103,20 @@ const Minibars = {
     },
     
     pushScope : function() {
-      Minibars.stack.push(Minibars.scope);
-      Minibars.scope = Minibars.utils.getName();
-      return(Minibars.scope);
+      _m.stack.push(_m.scope);
+      _m.scope = _m.utils.getName();
+      return(_m.scope);
     },
     
     popScope : function() {
-      Minibars.scope = Minibars.stack.pop() || 'data';
-      return(Minibars.scope);
+      _m.scope = _m.stack.pop() || 'data';
+      return(_m.scope);
     },
     
   },
   
   // helpers are called during runtime, but they need to be defined before compile() is called 
-  // because Minibars resolves their name during compile time
+  // because _m resolves their name during compile time
   helpers : { 
     
     /* example helper function */
@@ -130,7 +130,7 @@ const Minibars = {
   gen : {
     
     if_start : function(token) {
-      return('if('+Minibars.utils.field(token.params.trim())+') {');
+      return('if('+_m.utils.field(token.params.trim())+') {');
     },
     
     if_end : function(token) {
@@ -138,7 +138,7 @@ const Minibars = {
     },
     
     unless_start : function(token) {
-      return('if(!'+Minibars.utils.field(token.params.trim())+') {');
+      return('if(!'+_m.utils.field(token.params.trim())+') {');
     },
     
     unless_end : function(token) {
@@ -146,9 +146,9 @@ const Minibars = {
     },
     
     each_start : function(token) {
-      const container = Minibars.utils.field(token.params.trim());
-      const iterVN = Minibars.utils.getName();
-      const scp = Minibars.utils.pushScope();
+      const container = _m.utils.field(token.params.trim());
+      const iterVN = _m.utils.getName();
+      const scp = _m.utils.pushScope();
       return(
         'if('+container+'&&'+container+'.length>0) '+
         'for(let '+iterVN+'=0;'+iterVN+'<'+container+'.length;'+iterVN+'++) {'+
@@ -157,7 +157,7 @@ const Minibars = {
     },
     
     each_end : function(token) {
-      Minibars.utils.popScope();
+      _m.utils.popScope();
       return('}');
     },
     
@@ -177,10 +177,10 @@ const Minibars = {
     },
     
     properties_start : function(token) {
-      const container = Minibars.utils.field(token.params.trim());
-      const iterVN = Minibars.utils.getName();
-      const keyVN = Minibars.utils.getName();
-      const scp = Minibars.utils.pushScope();
+      const container = _m.utils.field(token.params.trim());
+      const iterVN = _m.utils.getName();
+      const keyVN = _m.utils.getName();
+      const scp = _m.utils.pushScope();
       return(
         'let '+keyVN+'=Object.keys('+container+');'+
         'if('+container+'&&'+keyVN+'.length>0) '+
@@ -188,25 +188,25 @@ const Minibars = {
         'const index='+iterVN+';'+
         'const key='+keyVN+'['+iterVN+'];'+
         'const '+scp+'='+container+'[key];'+
-        Minibars.gen.local_mapping(token, [scp, 'key']));
+        _m.gen.local_mapping(token, [scp, 'key']));
     },
     
     properties_end : function(token) {
-      Minibars.utils.popScope();
+      _m.utils.popScope();
       return('}');
     },
     
     with_start : function(token) {
-      const container = Minibars.utils.field(token.params.trim());
-      const scp = Minibars.utils.pushScope();
+      const container = _m.utils.field(token.params.trim());
+      const scp = _m.utils.pushScope();
       return(
         'if('+container+') { '+
         'const '+scp+'='+container+';'+
-        Minibars.gen.local_mapping(token, [scp]));
+        _m.gen.local_mapping(token, [scp]));
     },
     
     with_end : function(token) {
-      Minibars.utils.popScope();
+      _m.utils.popScope();
       return('}');
     },
     
@@ -215,48 +215,54 @@ const Minibars = {
     },
     
     log : function(token) {
-      return('console.log(Minibars.utils.safe('+Minibars.utils.field(token.params)+'));');
+      return('console.log(_m.utils.safe('+_m.utils.field(token.params)+'));');
     },
     
     _text_f : function(token) {
-      return('output += '+JSON.stringify(Minibars.opt.trim ? token.val.trim() : token.val)+';');
+      return('output += '+JSON.stringify(_m.opt.trim ? token.val.trim() : token.val)+';');
     },
     
-    _field_f : function(token) {
+    _invoke_synth : function(ct, token) {
+      return('output += _m.utils.'+
+        (token.raw ? 'unsafe' : 'safe')+
+        '('+ct+'['+JSON.stringify(token.val)+']('+_m.utils.field(token.params || 'this')+
+        ', '+_m.utils.field('this')+', '+JSON.stringify(token.params)+', data));');
+    },
+    
+    _field_f : function(token, opt) {
       if(token.block == 'start' || token.block == 'end') {
         const genKey = token.val+'_'+token.block;
-        if(Minibars.gen[genKey])
-          return(Minibars.gen[genKey](token));
+        if(_m.gen[genKey])
+          return(_m.gen[genKey](token));
         else {
           console.log('unrecognized field type', genKey);
           return('');
         }
       }
-      if(Minibars.gen[token.val])
-        return(Minibars.gen[token.val](token));
-      if(Minibars.helpers[token.val])
-        return('output += Minibars.utils.'+
-          (token.raw ? 'unsafe' : 'safe')+
-          '(Minibars.helpers['+JSON.stringify(token.val)+']('+Minibars.utils.field(token.params)+
-          ', '+Minibars.utils.field('this')+', '+JSON.stringify(token.params)+', data));');
+      if(_m.gen[token.val])
+        return(_m.gen[token.val](token));
+      if(_m.helpers[token.val])
+        return(_m.gen._invoke_synth('_m.helpers', token));
+      else if(typeof opt[token.val] == 'function')
+        return(_m.gen._invoke_synth('opt', token));
       else {
-        return('output += Minibars.utils.'+
+        return('output += _m.utils.'+
           (token.raw ? 'unsafe' : 'safe')+
-          '('+Minibars.utils.field(token.val)+');');
+          '('+_m.utils.field(token.val)+');');
       }
     },
     
   },
   
-  tokensToCode : function(tokens) {
+  tokensToCode : function(tokens, opt) {
     const code = [];
     
     tokens.forEach(function(t) {
-      const handler = Minibars.gen['_'+t.type+'_f'];
+      const handler = _m.gen['_'+t.type+'_f'];
       if(typeof handler != 'function')
         console.log('unrecognized field type', t.type);
       else
-        code.push(handler(t));
+        code.push(handler(t, opt));
     });
     
     return(code.join("\n"));
@@ -264,20 +270,22 @@ const Minibars = {
   
   compile : function(text, opt) {
     if(!opt) opt = {};
-    Minibars.opt = opt;
-    Minibars.stack = [];
-    Minibars.scope = 'data';
-    const tokens = Minibars.tokenize(text.trim());
-    const code = Minibars.tokensToCode(tokens);
+    _m.opt = opt;
+    _m.stack = [];
+    _m.scope = 'data';
+    const tokens = _m.tokenize((text || '').trim());
+    const code = _m.tokensToCode(tokens, opt);
     //console.log('code', code);
-    if(Minibars.stack.length != 0) {
+    if(_m.stack.length != 0) {
       const e = function() { return('template error: un-closed blocks'); };
       e.error = e();
       return(e);      
     } else {
       // straight-up string concat seems to be the fastest option
-      return(eval('(function(data) { "use strict"; let output = ""; '+code+' return(output); })'));
+      return(eval('(function(data) { "use strict"; if(!data) data = {}; let output = ""; '+code+' return(output); })'));
     }
   },
   
 }
+
+const Minibars = _m;
