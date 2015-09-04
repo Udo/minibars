@@ -160,21 +160,7 @@ where the data might look like this:
 
 You can use the `{{else}}` block in conjunction with {{#each}} (see the `if` block documentation for usage information).
 
-### Binding Custom Variables
-
-Like most blocks, the `{{#each}}` block supports binding custom variables to the referenced container object. This is done by appending a pipe symbol (`|`) and the custom field name to the command. In the example above, we might do this:
-
-```html
-  <ul>
-    {{#each items | myItem myIndex }}<div>
-      {{@myIndex}}: {{@myItem}}
-    </div>{{/each}}
-  </ul>
-```
-
-After defining them, the variables can be referenced by prefixing their names with an at symbol (`@`), as shown.
-
-_Notice: this uses a slightly different syntax than Handlebars does when declaring the custom variables. Also, note that the variables have to be prefixed with an @ symbol when used. It is not necessary to use the dot prefix notation in order to access an outer custom variable._
+`each` blocks supply the local variable `@index`, containing the current numerical index of the entry. 
 
 ## properties Block
 
@@ -201,6 +187,9 @@ where the data might look like this:
 ```
 
 You can use the `{{else}}` block in conjunction with {{#properties}} (see the `if` block documentation for usage information).
+
+`properties` blocks supply the local variables `@index`, containing the current numerical index of the entry, 
+and `@key`containing the current key. 
 
 _Notice: this is different from Handlebars.js which doesn't distinguish between arrays and objects - but Minibars does!_
 
@@ -230,7 +219,25 @@ where the data might look like this:
 	}
 }
 ```
- 
+
+# Advanced Concepts
+
+### Binding Custom Variables
+
+Like most blocks, the `{{#each}}` block supports binding custom variables to the referenced container object. This is done by appending a pipe symbol (`|`) and the custom field name to the command. In the example above, we might do this:
+
+```html
+  <ul>
+    {{#each items | myItem myIndex }}<div>
+      {{@myIndex}}: {{@myItem}}
+    </div>{{/each}}
+  </ul>
+```
+
+After defining them, the variables can be referenced by prefixing their names with an at symbol (`@`), as shown.
+
+_Notice: this uses a slightly different syntax than Handlebars does when declaring the custom variables. Also, note that the variables have to be prefixed with an @ symbol when used. It is not necessary to use the dot prefix notation in order to access an outer custom variable._
+
 ### Addressing Parent Contexts
 
 Inside block commands, the context of the data object changes to whatever the block is rendering. For example, within the `{{#with fieldName}}` block, the field `fieldName` becomes the local root object.
@@ -248,6 +255,11 @@ But it is still possible to access fields from outer contexts, using the dot pre
   </div>
 ```
 
+### The `@data` variable
+
+The @data variable contains the root data context of the template (this is the data
+object that was passed in when calling the template function).
+
 ### The `this` keyword
 
 Minibars interprets the word `this` as a field name referencing the current data context. Otherwise, `this` has no special meaning in Minibars and is not used inside helper functions.
@@ -258,7 +270,7 @@ Handlebars uses the same notation for field names and commands, and Minibars - s
 	
 Minibars will always choose the name of a command over the name of a field when resolving this. To properly address a susceptible field, prefix its name with a dot character (`.`): `{{.else}}`
 
-## log Helper
+### log Helper
 
 For debugging, it might be helpful to use the `{{log fieldName}}` command, which prints the referenced field into the browser's console.
 
