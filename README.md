@@ -2,7 +2,7 @@
 
 <img src="https://github.com/Udo/minibars/blob/master/assets/minibar-logo.png?raw=true" align="right"/>Minibars is a small, light-weight alternative to the more fully-featured Handlebars (http://handlebarsjs.com/) templating engine. It's non-minified code is just about 8kb in size, which makes it a viable alternative where code size is an issue and not all of Handlebars' features are required.
 
-I designed Minibars to be a minimally viable drop-in replacement for Handlebars in _my_ daily usage - your mileage will probably vary. Minibars does not offer any of the following advanced features: template comments (you can still use HTML comments), the Handblebars API, the same helper function signature, partials, and there are some differences in variable scoping behavior. However, simple Handlebars templates should compile without changes under Minibars.
+I designed Minibars to be a minimally viable drop-in replacement for Handlebars in _my_ daily usage - your mileage will probably vary. Minibars does not offer any of the following advanced features: template comments (you can still use HTML comments), the Handblebars API, partials, and there are some differences in variable scoping behavior. However, simple Handlebars templates should compile without changes under Minibars.
 
 License: minibars.js is released into the public domain.
 
@@ -49,7 +49,16 @@ The Minibars template function then generates HTML code from that data:
     </div>
   </div>
 ```
-  
+
+## General Usage
+
+```javascript
+var t = Minibars.compile(templateString [, options]);
+```
+
+`templateString` can be any string that will be parsed into a template.
+`options` an optionally supplied object containing helper functions.
+
 # Data Fields
 
 Fundamentally, Minibars fills fields from your data object into placeholders assigned for them inside the template. The example above illustrates a simple case. By default, all content is escaped for HTML code, meaning that the data will be seen as plain text by the browser.
@@ -305,17 +314,29 @@ Then, the entry template can be called from within the main template:
   </div>
 ```
 	
-# Customizing Minibars
+# Custom Helper Functions
 
 To extend the functionality of Minibars, you can introduce your own helper callbacks by appending functions to the `Minibars.helpers` object.
 
-For reference, the helpers object already contains an example helper, called "trim", which removes superfluous whitespace from content:
+You extend the array of built-in helper functions by supplying your own within the options parameter (see above). The signature of helper functions inside the options parameter looks like this:
 
+```javascript
+var myOptions = {
+  halp : function(field, container, fieldName, allData)
+  };
 ```
-Minibars.helpers.trim = function(val, container, fieldName, rootContext) {
-  return(val.trim());
-}
-```
+
+`halp`: the name of the helper. You can then call that helper from inside your template with, in this case, `{{{#halp}}}`.
+
+`field`: if a data field was supplied to the helper, its contents will be in that parameter. For example, if your content contains
+the helper call `{{{#halp items}}}`, the items field will be passed along in the field parameter.
+
+`container`: if the data `field` supplied was inside a container element, such as an array.
+
+`fieldName`: the name of the field as it was addressed in the template. For example, if your content contains
+the helper call `{{{#halp items}}}`, the `fieldName` parameter will be the string "items".
+
+`allData`: the entire data object that was initially passed to the template function (if available).   
 
 While commands like `{{#each}}` are incorporated into the template function at compile time, helpers are merely referenced and actually executed at run time as the template is being rendered.
 

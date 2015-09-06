@@ -115,17 +115,6 @@ const _m = {
     
   },
   
-  // helpers are called during runtime, but they need to be defined before compile() is called 
-  // because _m resolves their name during compile time
-  helpers : { 
-    
-    /* example helper function */
-    trim : function(val, container, fieldName, rootContext) {
-      return(val.trim())
-    },
-        
-  },
-  
   // code generators
   gen : {
     
@@ -219,11 +208,11 @@ const _m = {
     },
     
     _text_f : function(token) {
-      return('output += '+JSON.stringify(_m.opt.trim ? token.val.trim() : token.val)+';');
+      return('o += '+JSON.stringify(_m.opt.trim ? token.val.trim() : token.val)+';');
     },
     
     _invoke_synth : function(ct, token) {
-      return('output += _m.utils.'+
+      return('o += _m.utils.'+
         (token.raw ? 'unsafe' : 'safe')+
         '('+ct+'['+JSON.stringify(token.val)+']('+_m.utils.field(token.params || 'this')+
         ', '+_m.utils.field('this')+', '+JSON.stringify(token.params)+', data));');
@@ -241,12 +230,10 @@ const _m = {
       }
       if(_m.gen[token.val])
         return(_m.gen[token.val](token));
-      if(_m.helpers[token.val])
-        return(_m.gen._invoke_synth('_m.helpers', token));
-      else if(typeof opt[token.val] == 'function')
+      if(typeof opt[token.val] == 'function')
         return(_m.gen._invoke_synth('opt', token));
       else {
-        return('output += _m.utils.'+
+        return('o += _m.utils.'+
           (token.raw ? 'unsafe' : 'safe')+
           '('+_m.utils.field(token.val)+');');
       }
@@ -282,7 +269,7 @@ const _m = {
       return(e);      
     } else {
       // straight-up string concat seems to be the fastest option
-      return(eval('(function(data) { "use strict"; if(!data) data = {}; let output = ""; '+code+' return(output); })'));
+      return(eval('(function(data) { "use strict"; if(!data) data = {}; let o = ""; '+code+' return(o); })'));
     }
   },
   
