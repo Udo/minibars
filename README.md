@@ -314,11 +314,9 @@ Then, the entry template can be called from within the main template:
   </div>
 ```
 	
-# Custom Helper Functions
+## Custom Helper Functions
 
-To extend the functionality of Minibars, you can introduce your own helper callbacks by appending functions to the `Minibars.helpers` object.
-
-You extend the array of built-in helper functions by supplying your own within the options parameter (see above). The signature of helper functions inside the options parameter looks like this:
+You can extend the array of built-in helper functions by supplying your own within the options parameter (see above). The signature of helper functions inside the options parameter looks like this:
 
 ```javascript
 var myOptions = {
