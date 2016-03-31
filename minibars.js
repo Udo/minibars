@@ -1,6 +1,10 @@
 'use strict';
 // author: udo.schroeter@gmail.com
-// caution: right now this only works on Chrome!
+
+String.prototype.replaceAll = function(search, replacement) {
+    var target = this;
+    return target.split(search).join(replacement);
+};
 
 var _m = {
   
@@ -70,7 +74,7 @@ var _m = {
       
     safe : function(raw) {
       if(raw == null) raw = '';
-      return((raw +'').replace('<', '&lt;').replace('>', '&gt;').replace('"', '&quot;'));
+      return((raw +'').replaceAll('<', '&lt;').replaceAll('>', '&gt;').replaceAll('"', '&quot;'));
     },
     
     unsafe : function(raw) {
